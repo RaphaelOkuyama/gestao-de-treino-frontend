@@ -1,8 +1,14 @@
 import { redirect } from "next/navigation";
 import { authClient } from "@/app/_lib/auth-client";
 import { headers } from "next/headers";
+import { getHomeData, getUserTrainData } from "./_lib/api/fetch-generated";
+import dayjs from "dayjs";
 import Image from "next/image";
-
+import Link from "next/link";
+import { Flame } from "lucide-react";
+import { BottomNav } from "./_components/bottom-nav";
+import { ConsistencyTracker } from "./_components/consistency-tracker";
+import { WorkoutDayCard } from "./_components/workout-day-card";
 
 export default async function Home() {
   const session = await authClient.getSession({
@@ -13,6 +19,22 @@ export default async function Home() {
 
   if (!session.data?.user) redirect("/auth");
 
+  const today = dayjs();
+  const [homeData, trainData] = await Promise.all([
+    getHomeData(today.format("YYYY-MM-DD")),
+    getUserTrainData(),
+  ]);
+
+  if (homeData.status !== 200) {
+    throw new Error("Failed to fetch home data");
+  }
+
+  const needsOnboarding =
+    !homeData.data.activeWorkoutPlanId ||
+    (trainData.status === 200 && !trainData.data);
+  if (needsOnboarding) redirect("/onboarding");
+
+  const { todayWorkoutDay, workoutStreak, consistencyByDay } = homeData.data;
   const userName = session.data.user.name?.split(" ")[0] ?? "";
 
   return (
@@ -68,7 +90,51 @@ export default async function Home() {
             Ver histórico
           </button>
         </div>
+
+        <div className="flex items-center gap-3">
+          <div className="flex-1 rounded-xl border border-border p-5">
+            <ConsistencyTracker
+              consistencyByDay={consistencyByDay}
+              today={today}
+            />
+          </div>
+          <div className="flex items-center gap-2 self-stretch rounded-xl bg-streak px-5 py-2">
+            <Flame className="size-5 text-streak-foreground" />
+            <span className="font-heading text-base font-semibold text-foreground">
+              {workoutStreak}
+            </span>
+          </div>
+        </div>
       </div>
+
+      {todayWorkoutDay && (
+        <div className="flex flex-col gap-3 p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="font-heading text-lg font-semibold text-foreground">
+              Treino de Hoje
+            </h2>
+            <button className="font-heading text-xs text-primary">
+              Ver treinos
+            </button>
+          </div>
+
+          <Link
+            href={`/workout-plans/${todayWorkoutDay.workoutPlanId}/days/${todayWorkoutDay.id}`}
+          >
+            <WorkoutDayCard
+              name={todayWorkoutDay.name}
+              weekDay={todayWorkoutDay.weekDay}
+              estimatedDurationInSeconds={
+                todayWorkoutDay.estimatedDurationInSeconds
+              }
+              exercisesCount={todayWorkoutDay.exercisesCount}
+              coverImageUrl={todayWorkoutDay.coverImageUrl}
+            />
+          </Link>
+        </div>
+      )}
+
+      <BottomNav />
     </div>
   );
 }

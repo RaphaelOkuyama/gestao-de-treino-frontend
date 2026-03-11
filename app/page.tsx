@@ -34,8 +34,12 @@ export default async function Home() {
     (trainData.status === 200 && !trainData.data);
   if (needsOnboarding) redirect("/onboarding");
 
-  const { todayWorkoutDay, workoutStreak, consistencyByDay } = homeData.data;
+  const { todayWorkoutDay, workoutStreak, consistencyByDay, activeWorkoutPlanId } = homeData.data;
   const userName = session.data.user.name?.split(" ")[0] ?? "";
+
+  const workoutDayLink = todayWorkoutDay 
+    ? `/workout-plans/${todayWorkoutDay.workoutPlanId}/days/${todayWorkoutDay.id}`
+    : "#";
 
   return (
     <div className="flex min-h-svh flex-col bg-background pb-24">
@@ -63,7 +67,6 @@ export default async function Home() {
         >
           Fit.ai
         </p>
-
         <div className="relative flex w-full items-end justify-between">
           <div className="flex flex-col gap-1.5">
             <h1 className="font-heading text-2xl font-semibold leading-[1.05] text-background">
@@ -73,22 +76,26 @@ export default async function Home() {
               Bora treinar hoje?
             </p>
           </div>
-          <div className="rounded-full bg-primary px-4 py-2">
+          <Link 
+            href={workoutDayLink}
+            className={`rounded-full px-4 py-2 transition-transform active:scale-95 ${
+              todayWorkoutDay ? "bg-primary" : "bg-muted cursor-not-allowed"
+            }`}
+          >
             <span className="font-heading text-sm font-semibold text-primary-foreground">
               Bora!
             </span>
-          </div>
+          </Link>
         </div>
       </div>
-
       <div className="flex flex-col gap-3 px-5 pt-5">
         <div className="flex items-center justify-between">
           <h2 className="font-heading text-lg font-semibold text-foreground">
             Consistência
           </h2>
-          <button className="font-heading text-xs text-primary">
+          <Link href="/stats" className="font-heading text-xs text-primary hover:underline">
             Ver histórico
-          </button>
+          </Link>
         </div>
 
         <div className="flex items-center gap-3">
@@ -113,13 +120,17 @@ export default async function Home() {
             <h2 className="font-heading text-lg font-semibold text-foreground">
               Treino de Hoje
             </h2>
-            <button className="font-heading text-xs text-primary">
+            <Link 
+              href={`/workout-plans/${activeWorkoutPlanId}`} 
+              className="font-heading text-xs text-primary hover:underline"
+            >
               Ver treinos
-            </button>
+            </Link>
           </div>
 
           <Link
-            href={`/workout-plans/${todayWorkoutDay.workoutPlanId}/days/${todayWorkoutDay.id}`}
+            href={workoutDayLink}
+            className="transition-transform active:scale-[0.98]"
           >
             <WorkoutDayCard
               name={todayWorkoutDay.name}
@@ -134,7 +145,7 @@ export default async function Home() {
         </div>
       )}
 
-      <BottomNav />
+      <BottomNav activePage="home" />
     </div>
   );
 }

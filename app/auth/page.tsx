@@ -14,34 +14,49 @@ export default async function AuthPage() {
   if (session.data?.user) redirect("/");
 
   return (
-    <div className="relative flex min-h-svh flex-col bg-black">
-      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div className="relative flex min-h-svh flex-col overflow-hidden bg-black">
+      <div className="absolute inset-0" aria-hidden="true">
         <Image
-          src="/login-bg.png"
+          src="/login-bg.jpg"
           alt=""
           fill
-          className="object-cover"
+          className="object-cover object-right"
           priority
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.75) 100%)",
+          }}
         />
       </div>
 
-      <div className="relative z-10 flex justify-center pt-12">
-        <Image src="/fit-ai-logo.svg" alt="FIT.AI" width={85} height={38} />
+      <div className="relative z-10 flex justify-start pt-12 px-6">
+        <p
+          className="text-[28px] uppercase leading-none text-white"
+          style={{ fontFamily: "var(--font-anton)" }}
+        >
+          Fit.ai
+        </p>
       </div>
 
       <div className="flex-1" />
 
-      <div className="relative z-10 flex flex-col items-center gap-15 rounded-t-[20px] bg-primary px-5 pb-10 pt-12">
-        <div className="flex w-full flex-col items-center gap-6">
-          <h1 className="w-full text-center font-heading text-[32px] font-semibold leading-[1.05] text-primary-foreground">
+      <div className="relative z-10 flex flex-col gap-8 rounded-t-[40px] border-t border-white/10 bg-background px-6 pb-10 pt-10">
+        <div className="flex w-full flex-col gap-6">
+          <h1
+            className="text-4xl uppercase leading-tight text-foreground"
+            style={{ fontFamily: "var(--font-anton)" }}
+          >
             O app que vai transformar a forma como você treina.
           </h1>
 
           <SignInWithGoogle />
         </div>
 
-        <p className="font-heading text-xs leading-[1.4] text-primary-foreground/70">
-          ©2026 Copyright FIT.AI. Todos os direitos reservados
+        <p className="font-heading text-xs text-muted-foreground">
+          ©{new Date().getFullYear()} Copyright FIT.AI. Todos os direitos reservados
         </p>
       </div>
     </div>

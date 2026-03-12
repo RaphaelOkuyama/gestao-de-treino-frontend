@@ -5,7 +5,6 @@ import { getWorkoutDay, getHomeData, getUserTrainData } from "@/app/_lib/api/fet
 import dayjs from "dayjs";
 import Image from "next/image";
 import { Calendar, Timer, Dumbbell } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { BottomNav } from "@/app/_components/bottom-nav";
 import { BackButton } from "./_components/back-button";
 import { ExerciseCard } from "./_components/exercise-card";

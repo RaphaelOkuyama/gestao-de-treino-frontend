@@ -63,6 +63,7 @@ export default async function StatsPage() {
       </div>
 
       <div className="px-5">
+        {/* Agora usando o workoutStreak real da API */}
         <StreakBanner workoutStreak={workoutStreak} />
       </div>
 

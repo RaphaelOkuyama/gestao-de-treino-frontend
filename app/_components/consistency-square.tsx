@@ -10,16 +10,24 @@ export function ConsistencySquare({
   isToday,
 }: ConsistencySquareProps) {
   if (completed) {
-    return <div className="size-5 rounded-md bg-primary" />;
+    return (
+      <div className="size-7 rounded-lg bg-primary shadow-sm shadow-primary/30" />
+    );
   }
 
   if (started) {
-    return <div className="size-5 rounded-md bg-primary/20" />;
+    return (
+      <div className="size-7 rounded-lg bg-primary/25 border-2 border-primary/40" />
+    );
   }
 
   if (isToday) {
-    return <div className="size-5 rounded-md border-[1.6px] border-primary" />;
+    return (
+      <div className="size-7 rounded-lg border-2 border-primary relative">
+        <div className="absolute inset-0 rounded-[6px] bg-primary/10" />
+      </div>
+    );
   }
 
-  return <div className="size-5 rounded-md border border-border" />;
+  return <div className="size-7 rounded-lg border-2 border-border/50 bg-muted/30" />;
 }

@@ -9,7 +9,21 @@ Interface mobile-first do **FIT.AI**, um aplicativo de gestão de treinos com pe
 
 ## 📸 Screenshots
 
-> _Adicione aqui screenshots das telas: Home, Treino do Dia, Estatísticas, Chat e Perfil._
+<div align="center">
+
+| Login | Onboarding com IA | Home |
+|-------|------------------|------|
+| ![Login](./docs/tela-de-login.png) | ![Onboarding](./docs/montando-plano-de-treino-com-ia.png) | ![Home](./docs/home.png) |
+
+| Plano de Treino | Treino do Dia | Chatbot |
+|----------------|--------------|---------|
+| ![Plano](./docs/plano-de-treino.png) | ![Treino](./docs/treino-do-dia.png) | ![Chat](./docs/chatbot.png) |
+
+| Estatísticas | Perfil |
+|-------------|--------|
+| ![Estatísticas](./docs/estatisticas.png) | ![Perfil](./docs/profile.png) |
+
+</div>
 
 ---
 

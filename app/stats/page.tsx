@@ -44,18 +44,21 @@ export default async function StatsPage() {
   }
 
   const {
-    workoutStreak,
     consistencyByDay,
     completedWorkoutsCount,
     conclusionRate,
     totalTimeInSeconds,
   } = statsResponse.data;
 
+  const workoutStreak = homeData.status === 200
+    ? homeData.data.workoutStreak
+    : statsResponse.data.workoutStreak;
+
   return (
     <div className="flex min-h-svh flex-col bg-background pb-24">
       <div className="flex h-14 items-center px-5">
         <p
-          className="text-[22px] uppercase leading-[1.15] text-foreground"
+          className="text-[22px] uppercase leading-none text-foreground"
           style={{ fontFamily: "var(--font-anton)" }}
         >
           Fit.ai
@@ -63,35 +66,39 @@ export default async function StatsPage() {
       </div>
 
       <div className="px-5">
-        {/* Agora usando o workoutStreak real da API */}
         <StreakBanner workoutStreak={workoutStreak} />
       </div>
 
-      <div className="flex flex-col gap-3 p-5">
-        <h2 className="font-heading text-lg font-semibold text-foreground">
-          Consistência
-        </h2>
-
-        <StatsHeatmap consistencyByDay={consistencyByDay} today={today} />
-
-        <div className="grid grid-cols-2 gap-3">
-          <StatCard
-            icon={CircleCheck}
-            value={String(completedWorkoutsCount)}
-            label="Treinos Feitos"
-          />
-          <StatCard
-            icon={CirclePercent}
-            value={`${Math.round(conclusionRate * 100)}%`}
-            label="Taxa de conclusão"
-          />
+      <div className="flex flex-col gap-6 p-5">
+        <div className="flex flex-col gap-3">
+          <h2 className="font-heading text-lg font-bold text-foreground">
+            Consistência
+          </h2>
+          <StatsHeatmap consistencyByDay={consistencyByDay} today={today} />
         </div>
 
-        <StatCard
-          icon={Hourglass}
-          value={formatTotalTime(totalTimeInSeconds)}
-          label="Tempo Total"
-        />
+        <div className="flex flex-col gap-3">
+          <h2 className="font-heading text-lg font-bold text-foreground">
+            Métricas
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
+            <StatCard
+              icon={CircleCheck}
+              value={String(completedWorkoutsCount)}
+              label="Treinos Feitos"
+            />
+            <StatCard
+              icon={CirclePercent}
+              value={`${Math.round(conclusionRate * 100)}%`}
+              label="Taxa de conclusão"
+            />
+          </div>
+          <StatCard
+            icon={Hourglass}
+            value={formatTotalTime(totalTimeInSeconds)}
+            label="Tempo Total"
+          />
+        </div>
       </div>
 
       <BottomNav activePage="stats" />

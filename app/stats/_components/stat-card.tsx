@@ -8,15 +8,15 @@ interface StatCardProps {
 
 export function StatCard({ icon: Icon, value, label }: StatCardProps) {
   return (
-    <div className="flex flex-col items-center gap-5 rounded-xl bg-primary/8 p-5">
-      <div className="rounded-full bg-primary/8 p-2.5">
-        <Icon className="size-4 text-primary" />
+    <div className="flex flex-col items-center gap-4 rounded-2xl bg-muted/30 border border-border/40 p-5 shadow-sm">
+      <div className="flex items-center justify-center rounded-xl bg-muted/50 p-3">
+        <Icon className="size-5 text-foreground/70" />
       </div>
-      <div className="flex flex-col items-center gap-1.5">
-        <p className="font-heading text-2xl font-semibold leading-[1.15] text-foreground">
+      <div className="flex flex-col items-center gap-1">
+        <p className="font-heading text-2xl font-bold leading-none text-foreground">
           {value}
         </p>
-        <p className="font-heading text-xs text-muted-foreground">
+        <p className="font-heading text-xs uppercase tracking-wider text-muted-foreground">
           {label}
         </p>
       </div>

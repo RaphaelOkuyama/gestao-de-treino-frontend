@@ -9,6 +9,7 @@ import { Flame, ArrowRight, TrendingUp } from "lucide-react";
 import { BottomNav } from "./_components/bottom-nav";
 import { ConsistencyTracker } from "./_components/consistency-tracker";
 import { WorkoutDayCard } from "./_components/workout-day-card";
+import { RestDayCard } from "./_components/rest-day-card";
 import { cn } from "@/lib/utils";
 
 function getMotivationalSubtitle(streak: number, userName: string): string {
@@ -82,8 +83,11 @@ export default async function Home() {
         </div>
 
         <div className="relative flex w-full items-end justify-between gap-4">
-          <div className="flex flex-col gap-1.5">
-            <h1 className="font-heading text-3xl font-bold leading-tight text-white">
+          <div className="flex flex-col gap-2">
+            <h1
+              className="text-4xl uppercase leading-tight text-white"
+              style={{ fontFamily: "var(--font-anton)" }}
+            >
               Olá, {userName}
             </h1>
             <p className="font-heading text-sm text-white/60 leading-snug max-w-[200px]">
@@ -159,7 +163,7 @@ export default async function Home() {
             </span>
             <span
               className={cn(
-                "text-[9px] font-semibold uppercase tracking-wide leading-none",
+                "text-xs font-semibold uppercase tracking-wide leading-none",
                 isHighStreak ? "text-white/70" : "text-muted-foreground"
               )}
             >
@@ -187,13 +191,17 @@ export default async function Home() {
             href={workoutDayLink}
             className="transition-all hover:brightness-105 active:scale-[0.98]"
           >
-            <WorkoutDayCard
-              name={todayWorkoutDay.name}
-              weekDay={todayWorkoutDay.weekDay}
-              estimatedDurationInSeconds={todayWorkoutDay.estimatedDurationInSeconds}
-              exercisesCount={todayWorkoutDay.exercisesCount}
-              coverImageUrl={todayWorkoutDay.coverImageUrl}
-            />
+            {todayWorkoutDay.exercisesCount === 0 ? (
+              <RestDayCard weekDay={todayWorkoutDay.weekDay} showActions />
+            ) : (
+              <WorkoutDayCard
+                name={todayWorkoutDay.name}
+                weekDay={todayWorkoutDay.weekDay}
+                estimatedDurationInSeconds={todayWorkoutDay.estimatedDurationInSeconds}
+                exercisesCount={todayWorkoutDay.exercisesCount}
+                coverImageUrl={todayWorkoutDay.coverImageUrl}
+              />
+            )}
           </Link>
         </div>
       )}

@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Goal } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { BottomNav } from "@/app/_components/bottom-nav";
 import { WorkoutDayCard } from "@/app/_components/workout-day-card";
 import { RestDayCard } from "./_components/rest-day-card";
@@ -70,7 +69,7 @@ export default async function WorkoutPlanPage({
             className="absolute inset-0"
             style={{
               backgroundImage:
-                "linear-gradient(238deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%)",
+                "linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.85) 100%)",
             }}
           />
         </div>
@@ -82,16 +81,19 @@ export default async function WorkoutPlanPage({
           Fit.ai
         </p>
 
-        <div className="relative flex w-full items-end justify-between">
-          <div className="flex flex-col gap-3">
-            <Badge className="gap-1 rounded-full px-2.5 py-1.5 font-heading text-xs font-semibold uppercase">
-              <Goal className="size-4" />
-              {name}
-            </Badge>
-            <h1 className="font-heading text-2xl font-semibold leading-[1.05] text-background">
+        <div className="relative flex w-full flex-col gap-3">
+          <div className="flex items-center gap-1.5 rounded-full bg-background/10 px-3 py-1.5 backdrop-blur-sm w-fit border border-background/10">
+            <Goal className="size-3 text-background/50" />
+            <span className="font-heading text-[10px] font-bold uppercase tracking-widest text-background/50">
               Plano de Treino
-            </h1>
+            </span>
           </div>
+          <h1
+            className="text-3xl uppercase leading-tight text-background"
+            style={{ fontFamily: "var(--font-anton)" }}
+          >
+            {name}
+          </h1>
         </div>
       </div>
 

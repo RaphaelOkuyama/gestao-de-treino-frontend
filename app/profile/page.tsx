@@ -3,9 +3,10 @@ import { headers } from "next/headers";
 import { authClient } from "@/app/_lib/auth-client";
 import { getUserTrainData, getHomeData } from "@/app/_lib/api/fetch-generated";
 import dayjs from "dayjs";
+import Image from "next/image";
 import { BottomNav } from "@/app/_components/bottom-nav";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Weight, Ruler, BicepsFlexed, User } from "lucide-react";
+import { Weight, Ruler, BicepsFlexed, User, Crown } from "lucide-react";
 import { LogoutButton } from "./_components/logout-button";
 
 export default async function ProfilePage() {
@@ -39,96 +40,128 @@ export default async function ProfilePage() {
   const bodyFatPercentage = data?.bodyFatPercentage ?? null;
   const age = data?.age ?? null;
 
+  const firstName = user.name?.split(" ")[0] ?? "";
+
   return (
     <div className="flex min-h-svh flex-col bg-background pb-24">
-      <div className="flex h-[56px] items-center px-5">
+      <div className="relative flex h-[260px] shrink-0 flex-col items-start justify-between overflow-hidden rounded-b-[32px] px-6 pb-8 pt-6">
+        <div className="absolute inset-0" aria-hidden="true">
+          <Image
+            src="/profile-banner.jpg"
+            alt=""
+            fill
+            className="object-cover"
+            priority
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.85) 100%)",
+            }}
+          />
+        </div>
+
         <p
-          className="text-[22px] uppercase leading-[1.15] text-foreground"
+          className="relative text-[24px] uppercase leading-none text-white"
           style={{ fontFamily: "var(--font-anton)" }}
         >
           Fit.ai
         </p>
+
+        <div className="relative flex w-full items-end gap-4">
+          <Avatar className="size-16 ring-2 ring-white/20 ring-offset-2 ring-offset-transparent">
+            <AvatarImage src={user.image ?? undefined} alt={user.name} />
+            <AvatarFallback className="text-xl bg-muted text-foreground">
+              {user.name?.charAt(0)?.toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col gap-1.5 pb-1">
+            <h1
+              className="text-2xl uppercase leading-tight text-white"
+              style={{ fontFamily: "var(--font-anton)" }}
+            >
+              {firstName}
+            </h1>
+            <div className="flex items-center gap-1.5 rounded-full bg-background/10 px-2.5 py-1 backdrop-blur-sm border border-background/10 w-fit">
+              <Crown className="size-3 text-white/50" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-white/50">
+                Plano Básico
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-col items-center gap-5 px-5 pt-5">
-        <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Avatar className="size-[52px]">
-              <AvatarImage src={user.image ?? undefined} alt={user.name} />
-              <AvatarFallback className="text-lg">
-                {user.name?.charAt(0)?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col gap-1.5">
-              <h1 className="font-heading text-lg font-semibold leading-[1.05] text-foreground">
-                {user.name}
-              </h1>
-              <p className="font-heading text-sm leading-[1.15] text-foreground/70">
-                Plano Basico
-              </p>
+      <div className="flex flex-col gap-6 px-5 pt-8">
+        <div className="flex flex-col gap-3">
+          <h2 className="font-heading text-lg font-bold text-foreground">
+            Seus Dados
+          </h2>
+
+          <div className="grid w-full grid-cols-2 gap-3">
+            <div className="flex flex-col items-center gap-4 rounded-2xl bg-muted/30 border border-border/40 p-5 shadow-sm">
+              <div className="flex items-center justify-center rounded-xl bg-muted/50 p-2.5">
+                <Weight className="size-4 text-foreground/70" />
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <span className="font-heading text-2xl font-bold leading-none text-foreground">
+                  {weightInKg ?? "-"}
+                </span>
+                <span className="font-heading text-xs uppercase tracking-wider text-muted-foreground">
+                  Kg
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-4 rounded-2xl bg-muted/30 border border-border/40 p-5 shadow-sm">
+              <div className="flex items-center justify-center rounded-xl bg-muted/50 p-2.5">
+                <Ruler className="size-4 text-foreground/70" />
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <span className="font-heading text-2xl font-bold leading-none text-foreground">
+                  {heightInCm ?? "-"}
+                </span>
+                <span className="font-heading text-xs uppercase tracking-wider text-muted-foreground">
+                  Cm
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-4 rounded-2xl bg-muted/30 border border-border/40 p-5 shadow-sm">
+              <div className="flex items-center justify-center rounded-xl bg-muted/50 p-2.5">
+                <BicepsFlexed className="size-4 text-foreground/70" />
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <span className="font-heading text-2xl font-bold leading-none text-foreground">
+                  {bodyFatPercentage != null ? `${bodyFatPercentage}%` : "-"}
+                </span>
+                <span className="font-heading text-xs uppercase tracking-wider text-muted-foreground">
+                  Gordura
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-4 rounded-2xl bg-muted/30 border border-border/40 p-5 shadow-sm">
+              <div className="flex items-center justify-center rounded-xl bg-muted/50 p-2.5">
+                <User className="size-4 text-foreground/70" />
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <span className="font-heading text-2xl font-bold leading-none text-foreground">
+                  {age ?? "-"}
+                </span>
+                <span className="font-heading text-xs uppercase tracking-wider text-muted-foreground">
+                  Anos
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="grid w-full grid-cols-2 gap-3">
-          <div className="flex flex-col items-center gap-5 rounded-xl bg-primary/8 p-5">
-            <div className="flex items-center rounded-full bg-primary/8 p-[9px]">
-              <Weight className="size-4 text-primary" />
-            </div>
-            <div className="flex flex-col items-center gap-1.5">
-              <span className="font-heading text-2xl font-semibold leading-[1.15] text-foreground">
-                {weightInKg ?? "-"}
-              </span>
-              <span className="font-heading text-xs uppercase leading-[1.4] text-muted-foreground">
-                Kg
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center gap-5 rounded-xl bg-primary/8 p-5">
-            <div className="flex items-center rounded-full bg-primary/8 p-[9px]">
-              <Ruler className="size-4 text-primary" />
-            </div>
-            <div className="flex flex-col items-center gap-1.5">
-              <span className="font-heading text-2xl font-semibold leading-[1.15] text-foreground">
-                {heightInCm ?? "-"}
-              </span>
-              <span className="font-heading text-xs uppercase leading-[1.4] text-muted-foreground">
-                Cm
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center gap-5 rounded-xl bg-primary/8 p-5">
-            <div className="flex items-center rounded-full bg-primary/8 p-[9px]">
-              <BicepsFlexed className="size-4 text-primary" />
-            </div>
-            <div className="flex flex-col items-center gap-1.5">
-              <span className="font-heading text-2xl font-semibold leading-[1.15] text-foreground">
-                {bodyFatPercentage != null ? `${bodyFatPercentage}%` : "-"}
-              </span>
-              <span className="font-heading text-xs uppercase leading-[1.4] text-muted-foreground">
-                Gc
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center gap-5 rounded-xl bg-primary/8 p-5">
-            <div className="flex items-center rounded-full bg-primary/8 p-[9px]">
-              <User className="size-4 text-primary" />
-            </div>
-            <div className="flex flex-col items-center gap-1.5">
-              <span className="font-heading text-2xl font-semibold leading-[1.15] text-foreground">
-                {age ?? "-"}
-              </span>
-              <span className="font-heading text-xs uppercase leading-[1.4] text-muted-foreground">
-                Anos
-              </span>
-            </div>
-          </div>
+        <div className="flex flex-col gap-2 pt-2">
+          <div className="h-px w-full bg-border/40" />
+          <LogoutButton />
         </div>
-
-        <LogoutButton />
       </div>
 
       <BottomNav activePage="profile" />

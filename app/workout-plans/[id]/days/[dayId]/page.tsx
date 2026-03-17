@@ -184,7 +184,8 @@ export default async function WorkoutDayPage({
             <ExerciseCard
               key={exercise.id}
               exercise={exercise}
-              sessionId={inProgressSession?.id}
+              sessionId={inProgressSession?.id ?? completedSession?.id}
+              disabled={!hasInProgressSession && !hasCompletedSession}
             />
           ))}
       </div>

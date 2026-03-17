@@ -10,9 +10,10 @@ import type { GetWorkoutDay200ExercisesItem } from "@/app/_lib/api/fetch-generat
 interface ExerciseCardProps {
   exercise: GetWorkoutDay200ExercisesItem;
   sessionId?: string;
+  disabled?: boolean;
 }
 
-export function ExerciseCard({ exercise, sessionId }: ExerciseCardProps) {
+export function ExerciseCard({ exercise, sessionId, disabled = false }: ExerciseCardProps) {
   const storageKey = `exercise_done_${sessionId ?? "no_session"}_${exercise.id}`;
 
   const [completed, setCompleted] = useState(() => {
@@ -33,6 +34,7 @@ export function ExerciseCard({ exercise, sessionId }: ExerciseCardProps) {
   };
 
   const handleToggle = () => {
+    if (disabled) return;
     const next = !completed;
     setCompleted(next);
     localStorage.setItem(storageKey, String(next));
@@ -42,7 +44,7 @@ export function ExerciseCard({ exercise, sessionId }: ExerciseCardProps) {
     <div
       className={cn(
         "flex flex-col gap-4 rounded-2xl border p-5 transition-all duration-300",
-        completed
+        completed && !disabled
           ? "border-primary/30 bg-primary/5"
           : "border-border/40 bg-muted/20"
       )}
@@ -51,14 +53,17 @@ export function ExerciseCard({ exercise, sessionId }: ExerciseCardProps) {
         <div className="flex items-start gap-3 min-w-0">
           <button
             onClick={handleToggle}
+            disabled={disabled}
             className={cn(
               "mt-0.5 flex shrink-0 size-5 items-center justify-center rounded-full border-2 transition-all duration-300",
-              completed
-                ? "border-primary bg-primary"
-                : "border-border/60 bg-transparent"
+              disabled
+                ? "border-border/30 bg-transparent opacity-30 cursor-not-allowed"
+                : completed
+                  ? "border-primary bg-primary"
+                  : "border-border/60 bg-transparent hover:border-primary/50"
             )}
           >
-            {completed && (
+            {completed && !disabled && (
               <Check className="size-3 text-primary-foreground" strokeWidth={3} />
             )}
           </button>
@@ -66,7 +71,9 @@ export function ExerciseCard({ exercise, sessionId }: ExerciseCardProps) {
           <span
             className={cn(
               "font-heading text-base font-semibold leading-snug transition-all duration-300",
-              completed ? "text-muted-foreground line-through" : "text-foreground"
+              completed && !disabled
+                ? "text-muted-foreground line-through"
+                : "text-foreground"
             )}
           >
             {exercise.name}

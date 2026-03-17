@@ -9,10 +9,16 @@ import type { GetWorkoutDay200ExercisesItem } from "@/app/_lib/api/fetch-generat
 
 interface ExerciseCardProps {
   exercise: GetWorkoutDay200ExercisesItem;
+  sessionId?: string;
 }
 
-export function ExerciseCard({ exercise }: ExerciseCardProps) {
-  const [completed, setCompleted] = useState(false);
+export function ExerciseCard({ exercise, sessionId }: ExerciseCardProps) {
+  const storageKey = `exercise_done_${sessionId ?? "no_session"}_${exercise.id}`;
+
+  const [completed, setCompleted] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(storageKey) === "true";
+  });
 
   const [, setChatParams] = useQueryStates({
     chat_open: parseAsBoolean.withDefault(false),
@@ -24,6 +30,12 @@ export function ExerciseCard({ exercise }: ExerciseCardProps) {
       chat_open: true,
       chat_initial_message: `Como executar o exercício ${exercise.name} corretamente?`,
     });
+  };
+
+  const handleToggle = () => {
+    const next = !completed;
+    setCompleted(next);
+    localStorage.setItem(storageKey, String(next));
   };
 
   return (
@@ -38,7 +50,7 @@ export function ExerciseCard({ exercise }: ExerciseCardProps) {
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 min-w-0">
           <button
-            onClick={() => setCompleted((prev) => !prev)}
+            onClick={handleToggle}
             className={cn(
               "mt-0.5 flex shrink-0 size-5 items-center justify-center rounded-full border-2 transition-all duration-300",
               completed
@@ -46,7 +58,9 @@ export function ExerciseCard({ exercise }: ExerciseCardProps) {
                 : "border-border/60 bg-transparent"
             )}
           >
-            {completed && <Check className="size-3 text-primary-foreground" strokeWidth={3} />}
+            {completed && (
+              <Check className="size-3 text-primary-foreground" strokeWidth={3} />
+            )}
           </button>
 
           <span

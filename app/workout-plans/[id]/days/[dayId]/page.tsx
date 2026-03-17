@@ -31,10 +31,6 @@ const WEEKDAY_TITLE_LABELS: Record<string, string> = {
   SUNDAY: "Domingo",
 };
 
-/**
- * Mapeamento para validar o dia atual contra o enum do backend
- * dayjs().day() retorna: 0 (Dom) a 6 (Sáb)
- */
 const WEEKDAY_VALIDATOR: Record<string, number> = {
   SUNDAY: 0,
   MONDAY: 1,
@@ -81,22 +77,22 @@ export default async function WorkoutDayPage({
     coverImageUrl,
   } = workoutDayData.data;
 
-  // Lógica de Trava de Segurança por Dia
   const todayNum = dayjs().day();
   const isCorrectDay = WEEKDAY_VALIDATOR[weekDay] === todayNum;
 
   const durationInMinutes = Math.round(estimatedDurationInSeconds / 60);
 
   const inProgressSession = sessions.find(
-    (s) => s.startedAt && !s.completedAt,
+    (s) => s.startedAt && !s.completedAt && dayjs(s.startedAt).isSame(dayjs(), "day"),
   );
-  const completedSession = sessions.find((s) => s.completedAt);
+  const completedSession = sessions.find(
+    (s) => s.completedAt && dayjs(s.completedAt).isSame(dayjs(), "day"),
+  );
   const hasInProgressSession = !!inProgressSession;
   const hasCompletedSession = !!completedSession;
 
   return (
     <div className="flex min-h-svh flex-col bg-background pb-24">
-      {/* Header de Navegação */}
       <div className="flex items-center justify-between px-5 py-4">
         <BackButton />
         <h1 className="font-heading text-lg font-semibold text-foreground">
@@ -107,7 +103,6 @@ export default async function WorkoutDayPage({
         <div className="size-6" />
       </div>
 
-      {/* Banner do Treino */}
       <div className="px-5">
         <div className="relative flex h-[200px] w-full flex-col items-start justify-between overflow-hidden rounded-xl p-5">
           {coverImageUrl && (
@@ -121,7 +116,6 @@ export default async function WorkoutDayPage({
           )}
           <div className="absolute inset-0 bg-black/40" />
 
-          {/* Badge de Dia da Semana */}
           <div className="relative">
             <div className="flex items-center gap-1.5 rounded-full bg-white/20 px-2.5 py-1 backdrop-blur-md border border-white/10">
               <Calendar className="size-3.5 text-white" />
@@ -131,10 +125,9 @@ export default async function WorkoutDayPage({
             </div>
           </div>
 
-          {/* Rodapé do Banner: Nome e Ações */}
           <div className="relative flex w-full items-end justify-between gap-4">
             <div className="flex flex-col gap-1 min-w-0">
-              <h2 
+              <h2
                 className="text-2xl uppercase leading-tight text-white truncate"
                 style={{ fontFamily: "var(--font-anton)" }}
               >
@@ -156,7 +149,6 @@ export default async function WorkoutDayPage({
               </div>
             </div>
 
-            {/* Container do Botão com largura fixa para evitar quebra */}
             <div className="shrink-0">
               {!hasInProgressSession && !hasCompletedSession && isCorrectDay && (
                 <StartWorkoutButton
@@ -165,7 +157,6 @@ export default async function WorkoutDayPage({
                 />
               )}
 
-              {/* Estado Bloqueado: Texto curto para não quebrar o layout */}
               {!hasInProgressSession && !hasCompletedSession && !isCorrectDay && (
                 <div className="rounded-full bg-white/10 px-4 py-2 backdrop-blur-md border border-white/10 whitespace-nowrap">
                   <span className="font-heading text-[10px] font-bold text-white/60 uppercase tracking-tight">
@@ -174,7 +165,6 @@ export default async function WorkoutDayPage({
                 </div>
               )}
 
-              {/* Estado Concluído */}
               {hasCompletedSession && (
                 <div className="rounded-full bg-emerald-500/20 px-4 py-2 backdrop-blur-md border border-emerald-500/20 whitespace-nowrap">
                   <span className="font-heading text-[10px] font-bold text-emerald-400 uppercase tracking-tight">
@@ -187,16 +177,18 @@ export default async function WorkoutDayPage({
         </div>
       </div>
 
-      {/* Lista de Exercícios */}
       <div className="flex flex-col gap-3 px-5 pt-5">
         {exercises
           .sort((a, b) => a.order - b.order)
           .map((exercise) => (
-            <ExerciseCard key={exercise.id} exercise={exercise} />
+            <ExerciseCard
+              key={exercise.id}
+              exercise={exercise}
+              sessionId={inProgressSession?.id}
+            />
           ))}
       </div>
 
-      {/* Botão Flutuante/Rodapé para Finalizar Treino */}
       {hasInProgressSession && inProgressSession && (
         <div className="px-5 pt-5">
           <CompleteWorkoutButton

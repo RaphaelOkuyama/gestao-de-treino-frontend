@@ -1,7 +1,6 @@
 "use client";
 
 import { useTransition } from "react";
-import { Button } from "@/components/ui/button";
 import { startWorkoutAction } from "../_actions";
 
 interface StartWorkoutButtonProps {
@@ -22,12 +21,12 @@ export function StartWorkoutButton({
   };
 
   return (
-    <Button
+    <button
       onClick={handleStart}
       disabled={isPending}
-      className="rounded-full px-4 py-2 font-heading text-sm font-semibold"
+      className="rounded-full bg-white/15 border border-white/25 backdrop-blur-md px-4 py-2 font-heading text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-white/25 active:scale-95 disabled:opacity-50"
     >
-      Iniciar Treino
-    </Button>
+      {isPending ? "Iniciando..." : "Iniciar Treino"}
+    </button>
   );
 }

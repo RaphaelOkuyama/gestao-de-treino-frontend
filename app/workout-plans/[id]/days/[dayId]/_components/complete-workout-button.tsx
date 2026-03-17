@@ -25,12 +25,11 @@ export function CompleteWorkoutButton({
 
   return (
     <Button
-      variant="outline"
       onClick={handleComplete}
       disabled={isPending}
-      className="w-full rounded-full py-3 font-heading text-sm font-semibold"
+      className="w-full rounded-full py-6 font-heading text-sm font-bold uppercase tracking-wider"
     >
-      Marcar como concluído
+      {isPending ? "Finalizando..." : "Marcar como concluído"}
     </Button>
   );
 }
